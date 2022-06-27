@@ -92,11 +92,12 @@ WfInfo::WfInfo()
 
     wl_registry_add_listener(registry, &registry_listener, this);
 
+    wf_information_manager = NULL;
     wl_display_roundtrip(display);
     wl_registry_destroy(registry);
     if (!wf_information_manager)
     {
-        std::cout << "Wayfire desktop protocol not advertised by compositor." << std::endl;
+        std::cout << "Wayfire desktop protocol not advertised by compositor. Is wf-info plugin enabled?" << std::endl;
         return;
     }
     wf_info_base_view_info(wf_information_manager);
@@ -106,7 +107,6 @@ WfInfo::WfInfo()
     while(1)
         wl_display_dispatch(display);
 
-    wl_registry_destroy(registry);
     wl_display_flush(display);
     wl_display_disconnect(display);
 }
@@ -118,4 +118,6 @@ WfInfo::~WfInfo()
 int main(int argc, char *argv[])
 {
     WfInfo();
+
+    return 0;
 }
