@@ -52,6 +52,11 @@ void wayfire_information::send_view_info()
     {
         return;
     }
+    auto output = view->get_output();
+    if (!output)
+    {
+        return;
+    }
 
     std::string role;
     switch (view->role)
@@ -70,11 +75,21 @@ void wayfire_information::send_view_info()
             break;
     }
 
+    auto og = output->get_screen_size();
+    auto ws = output->workspace->get_current_workspace();
+    auto wm = view->transform_region(view->get_wm_geometry());
+    wf::point_t workspace = {
+        ws.x + (int)std::floor((wm.x + wm.width / 2.0) / og.width),
+        ws.y + (int)std::floor((wm.y + wm.height / 2.0) / og.height)
+    };
+
     auto vg = view->get_wm_geometry();
 
     for (auto r : client_resources)
     {
         wf_info_base_send_view_info(r, intptr_t(view.get()),
+                                       workspace.x,
+                                       workspace.y,
                                        view->get_app_id().c_str(),
                                        view->get_title().c_str(),
                                        role.c_str(),

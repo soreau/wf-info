@@ -41,6 +41,8 @@
 	Provide client with information about a view.
       </description>
       <arg name="view_id" type="int" summary="view wayfire ID"/>
+      <arg name="workspace_x" type="int" summary="view workspace x"/>
+      <arg name="workspace_y" type="int" summary="view workspace y"/>
       <arg name="app_id" type="string" summary="view application ID"/>
       <arg name="title" type="string" summary="view title"/>
       <arg name="role" type="string" summary="view role"/>

@@ -56,6 +56,8 @@ static const struct wl_registry_listener registry_listener = {
 static void receive_view_info(void *data,
     struct wf_info_base *wf_info_base,
     const int view_id,
+    const int ws_x,
+    const int ws_y,
     const char *app_id,
     const char *title,
     const char *role,
@@ -65,6 +67,7 @@ static void receive_view_info(void *data,
     const int height)
 {
     std::cout << "View ID: " << view_id << std::endl;
+    std::cout << "Workspace: " << ws_x << "," << ws_y << std::endl;
     std::cout << "App ID: "  << app_id << std::endl;
     std::cout << "Title: " << title << std::endl;
     std::cout << "Role: " << role << std::endl;
