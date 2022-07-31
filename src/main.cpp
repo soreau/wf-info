@@ -28,7 +28,7 @@
 #include <wayfire/signal-definitions.hpp>
 #include <wayfire/util/log.hpp>
 
-#include "wayfire-information/wayfire-information.hpp"
+#include "plugin/wayfire-information.hpp"
 
 class wf_info
 {
