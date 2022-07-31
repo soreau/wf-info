@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <wayfire>
 	<plugin name="wf-info">
-		<_short>Wayfire Information Protocol</_short>
+		<_short>Information Protocol</_short>
 		<_long>Support for additional information about views and the desktop.</_long>
 		<category>Utility</category>
 	</plugin>
