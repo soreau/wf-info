@@ -87,7 +87,7 @@ void wayfire_information::send_view_info()
 
     for (auto r : client_resources)
     {
-        wf_info_base_send_view_info(r, uintptr_t(view.get()),
+        wf_info_base_send_view_info(r, view->get_id(),
                                        workspace.x,
                                        workspace.y,
                                        view->get_app_id().c_str(),
