@@ -31,6 +31,7 @@
 #include <wayfire/output-layout.hpp>
 #include <wayfire/workspace-manager.hpp>
 #include <wayfire/signal-definitions.hpp>
+#include <wayfire/nonstd/wlroots-full.hpp>
 #include <linux/input-event-codes.h>
 #include <wayfire/util/log.hpp>
 
@@ -85,9 +86,24 @@ void wayfire_information::send_view_info()
 
     auto vg = view->get_wm_geometry();
 
+    pid_t pid = 0;
+    wlr_surface *wlr_surface = view->get_wlr_surface();
+    int is_xwayland_surface = 0;
+#if WF_HAS_XWAYLAND
+    is_xwayland_surface = wlr_surface_is_xwayland_surface(wlr_surface);
+    if (is_xwayland_surface)
+    {
+        pid = wlr_xwayland_surface_from_wlr_surface(wlr_surface)->pid;
+    } else
+#endif
+    {
+        wl_client_get_credentials(view->get_client(), &pid, 0, 0);
+    }
+
     for (auto r : client_resources)
     {
         wf_info_base_send_view_info(r, view->get_id(),
+                                       pid,
                                        workspace.x,
                                        workspace.y,
                                        view->get_app_id().c_str(),
@@ -96,7 +112,8 @@ void wayfire_information::send_view_info()
                                        vg.x,
                                        vg.y,
                                        vg.width,
-                                       vg.height);
+                                       vg.height,
+                                       is_xwayland_surface);
     }
 }
 

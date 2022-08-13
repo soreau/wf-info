@@ -41,6 +41,7 @@
 	Provide client with information about a view.
       </description>
       <arg name="view_id" type="int" summary="view wayfire ID"/>
+      <arg name="client_pid" type="int" summary="client PID"/>
       <arg name="workspace_x" type="int" summary="view workspace x"/>
       <arg name="workspace_y" type="int" summary="view workspace y"/>
       <arg name="app_id" type="string" summary="view application ID"/>
@@ -50,7 +51,7 @@
       <arg name="y" type="int" summary="view y position"/>
       <arg name="width" type="int" summary="view width"/>
       <arg name="height" type="int" summary="view height"/>
+      <arg name="is_xwayland" type="int" summary="whether view is xwayland"/>
     </event>
   </interface>
 </protocol>
-

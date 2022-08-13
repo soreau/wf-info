@@ -56,6 +56,7 @@ static const struct wl_registry_listener registry_listener = {
 static void receive_view_info(void *data,
     struct wf_info_base *wf_info_base,
     const int view_id,
+    const int client_pid,
     const int ws_x,
     const int ws_y,
     const char *app_id,
@@ -64,14 +65,17 @@ static void receive_view_info(void *data,
     const int x,
     const int y,
     const int width,
-    const int height)
+    const int height,
+    const int xwayland)
 {
     std::cout << "View ID: " << view_id << std::endl;
+    std::cout << "Client PID: " << client_pid << std::endl;
     std::cout << "Workspace: " << ws_x << "," << ws_y << std::endl;
     std::cout << "App ID: "  << app_id << std::endl;
     std::cout << "Title: " << title << std::endl;
     std::cout << "Role: " << role << std::endl;
     std::cout << "Geometry: " << x << "," << y << " " << width << "x" << height << std::endl;
+    std::cout << "Xwayland: " << (xwayland ? "true" : "false" ) << std::endl;
     exit(0);
 }
 
