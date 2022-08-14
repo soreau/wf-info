@@ -99,6 +99,8 @@ void wayfire_information::send_view_info(wayfire_view view)
         wl_client_get_credentials(view->get_client(), &pid, 0, 0);
     }
 
+    int focused = wf::get_core().get_active_output()->get_active_view() == view;
+
     for (auto r : client_resources)
     {
         wf_info_base_send_view_info(r, view->get_id(),
@@ -112,7 +114,8 @@ void wayfire_information::send_view_info(wayfire_view view)
                                        vg.y,
                                        vg.width,
                                        vg.height,
-                                       is_xwayland_surface);
+                                       is_xwayland_surface,
+                                       focused);
     }
 }
 

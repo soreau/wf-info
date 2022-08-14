@@ -66,7 +66,8 @@ static void receive_view_info(void *data,
     const int y,
     const int width,
     const int height,
-    const int xwayland)
+    const int xwayland,
+    const int focused)
 {
     std::cout << "=========================" << std::endl;
     std::cout << "View ID: " << view_id << std::endl;
@@ -77,6 +78,7 @@ static void receive_view_info(void *data,
     std::cout << "Role: " << role << std::endl;
     std::cout << "Geometry: " << x << "," << y << " " << width << "x" << height << std::endl;
     std::cout << "Xwayland: " << (xwayland ? "true" : "false") << std::endl;
+    std::cout << "Focused: " << (focused ? "true" : "false") << std::endl;
     std::cout << "=========================" << std::endl;
 }
 

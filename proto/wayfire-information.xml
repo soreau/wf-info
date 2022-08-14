@@ -58,6 +58,7 @@
       <arg name="width" type="int" summary="view width"/>
       <arg name="height" type="int" summary="view height"/>
       <arg name="is_xwayland" type="int" summary="whether view is xwayland"/>
+      <arg name="focused" type="int" summary="whether view is focused"/>
     </event>
 
     <event name="done">
