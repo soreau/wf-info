@@ -31,7 +31,7 @@ class wayfire_information
 
   public:
     std::vector<wl_resource*> client_resources;
-    void send_view_info();
+    void send_view_info(wayfire_view view);
     void deactivate();
     wf::wl_idle_call idle_set_cursor;
     std::map<wf::output_t*, std::unique_ptr<wf::plugin_grab_interface_t>> grab_interfaces;

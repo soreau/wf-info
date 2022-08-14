@@ -36,6 +36,12 @@
       </description>
     </request>
 
+    <request name="view_info_list">
+      <description summary="get information from all views">
+	Get information about all views.
+      </description>
+    </request>
+
     <event name="view_info">
       <description summary="Export information about a view to a client">
 	Provide client with information about a view.
@@ -52,6 +58,12 @@
       <arg name="width" type="int" summary="view width"/>
       <arg name="height" type="int" summary="view height"/>
       <arg name="is_xwayland" type="int" summary="whether view is xwayland"/>
+    </event>
+
+    <event name="done">
+      <description summary="Notify client that the complete list of views has been sent">
+	Notify client that the complete list of views has been sent.
+      </description>
     </event>
   </interface>
 </protocol>

@@ -68,6 +68,7 @@ static void receive_view_info(void *data,
     const int height,
     const int xwayland)
 {
+    std::cout << "=========================" << std::endl;
     std::cout << "View ID: " << view_id << std::endl;
     std::cout << "Client PID: " << client_pid << std::endl;
     std::cout << "Workspace: " << ws_x << "," << ws_y << std::endl;
@@ -75,15 +76,22 @@ static void receive_view_info(void *data,
     std::cout << "Title: " << title << std::endl;
     std::cout << "Role: " << role << std::endl;
     std::cout << "Geometry: " << x << "," << y << " " << width << "x" << height << std::endl;
-    std::cout << "Xwayland: " << (xwayland ? "true" : "false" ) << std::endl;
+    std::cout << "Xwayland: " << (xwayland ? "true" : "false") << std::endl;
+    std::cout << "=========================" << std::endl;
+}
+
+static void done(void *data,
+    struct wf_info_base *wf_info_base)
+{
     exit(0);
 }
 
 static struct wf_info_base_listener information_base_listener {
 	.view_info = receive_view_info,
+	.done = done,
 };
 
-WfInfo::WfInfo()
+WfInfo::WfInfo(int argc, char *argv[])
 {
     display = wl_display_connect(NULL);
     if (!display)
@@ -104,12 +112,22 @@ WfInfo::WfInfo()
     wl_registry_destroy(registry);
     if (!wf_information_manager)
     {
-        std::cout << "Wayfire desktop protocol not advertised by compositor. Is wf-info plugin enabled?" << std::endl;
+        std::cout << "Wayfire information protocol not advertised by compositor. Is wf-info plugin enabled?" << std::endl;
         return;
     }
-    wf_info_base_view_info(wf_information_manager);
+
     wf_info_base_add_listener(wf_information_manager,
         &information_base_listener, this);
+
+    int list_all_views = (argc > 1 && !strcmp(argv[1], "-l"));
+    if (list_all_views)
+    {
+        wf_info_base_view_info_list(wf_information_manager);
+    }
+    else
+    {
+        wf_info_base_view_info(wf_information_manager);
+    }
 
     while(1)
         wl_display_dispatch(display);
@@ -124,7 +142,7 @@ WfInfo::~WfInfo()
 
 int main(int argc, char *argv[])
 {
-    WfInfo();
+    WfInfo(argc, argv);
 
     return 0;
 }

@@ -30,7 +30,7 @@
 class WfInfo
 {
   public:
-    WfInfo();
+    WfInfo(int argc, char *argv[]);
     ~WfInfo();
 
     wl_display *display;

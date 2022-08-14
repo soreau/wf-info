@@ -46,9 +46,8 @@ extern "C"
 static void bind_manager(wl_client *client, void *data,
     uint32_t version, uint32_t id);
 
-void wayfire_information::send_view_info()
+void wayfire_information::send_view_info(wayfire_view view)
 {
-    wayfire_view view = wf::get_core().get_cursor_focus_view();
     if (!view)
     {
         return;
@@ -129,7 +128,11 @@ void wayfire_information::deactivate()
     idle_set_cursor.run_once([this] ()
     {
         wf::get_core().set_cursor("default");
-        send_view_info();
+        send_view_info(wf::get_core().get_cursor_focus_view());
+        for (auto r : client_resources)
+        {
+            wf_info_base_send_done(r);
+        }
     });
 }
 
@@ -185,9 +188,33 @@ static void get_view_info(struct wl_client *client, struct wl_resource *resource
     });
 }
 
+static void send_all_views(struct wl_client *client, struct wl_resource *resource)
+{
+    wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
+
+    for (auto& output : wf::get_core().output_layout->get_outputs())
+    {
+        for (auto& view : output->workspace->get_views_in_layer(wf::ALL_LAYERS))
+        {
+            if (view->role != wf::VIEW_ROLE_TOPLEVEL &&
+                view->role != wf::VIEW_ROLE_DESKTOP_ENVIRONMENT)
+            {
+                continue;
+            }
+            wd->send_view_info(view);
+        }
+    }
+
+    for (auto r : wd->client_resources)
+    {
+        wf_info_base_send_done(r);
+    }
+}
+
 static const struct wf_info_base_interface wayfire_information_impl =
 {
-    .view_info = get_view_info,
+    .view_info      = get_view_info,
+    .view_info_list = send_all_views,
 };
 
 static void destroy_client(wl_resource *resource)
