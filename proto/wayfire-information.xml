@@ -36,6 +36,13 @@
       </description>
     </request>
 
+    <request name="view_info_id">
+      <description summary="get information about the view from id">
+	Get information about the view from id.
+      </description>
+      <arg name="view_id" type="int" summary="view ID"/>
+    </request>
+
     <request name="view_info_list">
       <description summary="get information from all views">
 	Get information about all views.

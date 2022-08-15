@@ -13,8 +13,7 @@ sudo ninja -C build install
 
 Enable Information Protocol plugin
 
-Run `wf-info` and click on a window
-or, run `wf-info -l` to list information about all windows
+Run `wf-info` and click on a window, run `wf-info -l` to list information about all windows, or use `wf-info -i $id` where `$id` is the ID of the view about which you want info. An ID of -1 means the focused view.
 
 ## Example
 

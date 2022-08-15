@@ -25,6 +25,8 @@
 
 #include <iostream>
 #include <string.h>
+#include <getopt.h>
+#include <vector>
 
 #include "wf-info.hpp"
 
@@ -121,12 +123,41 @@ WfInfo::WfInfo(int argc, char *argv[])
     wf_info_base_add_listener(wf_information_manager,
         &information_base_listener, this);
 
-    int list_all_views = (argc > 1 && !strcmp(argv[1], "-l"));
+    struct option opts[] = {
+        { "view-id",     required_argument, NULL, 'i' },
+        { "all-views",   no_argument,       NULL, 'l' },
+        { 0,             0,                 NULL,  0  }
+    };
+
+    std::vector<int> view_ids;
+    int c, i, list_all_views = 0;
+    while((c = getopt_long(argc, argv, "i:l", opts, &i)) != -1)
+    {
+        switch(c)
+        {
+            case 'i':
+                view_ids.push_back(atoi(optarg));
+                break;
+
+            case 'l':
+                list_all_views = 1;
+                break;
+
+            default:
+                printf("Unsupported command line argument %s\n", optarg);
+        }
+    }
+
+    for (auto view_id : view_ids)
+    {
+        wf_info_base_view_info_id(wf_information_manager, view_id);
+    }
+
     if (list_all_views)
     {
         wf_info_base_view_info_list(wf_information_manager);
     }
-    else
+    else if (view_ids.empty())
     {
         wf_info_base_view_info(wf_information_manager);
     }

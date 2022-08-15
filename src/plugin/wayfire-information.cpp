@@ -163,6 +163,24 @@ wayfire_information::~wayfire_information()
     wl_global_destroy(manager);
 }
 
+wayfire_view view_from_id(int32_t id)
+{
+    if (id == -1)
+    {
+        return wf::get_core().get_active_output()->get_active_view();
+    }
+
+    for (auto& view : wf::get_core().get_all_views())
+    {
+        if (int32_t(view->get_id()) == id)
+        {
+            return view;
+        }
+    }
+
+    return nullptr;
+}
+
 static void get_view_info(struct wl_client *client, struct wl_resource *resource)
 {
     wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
@@ -191,6 +209,25 @@ static void get_view_info(struct wl_client *client, struct wl_resource *resource
     });
 }
 
+static void send_view_info_from_id(struct wl_client *client, struct wl_resource *resource, int id)
+{
+    wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
+
+    auto view = view_from_id(id);
+
+    if (!view)
+    {
+        return;
+    }
+
+    wd->send_view_info(view);
+
+    for (auto r : wd->client_resources)
+    {
+        wf_info_base_send_done(r);
+    }
+}
+
 static void send_all_views(struct wl_client *client, struct wl_resource *resource)
 {
     wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
@@ -217,6 +254,7 @@ static void send_all_views(struct wl_client *client, struct wl_resource *resourc
 static const struct wf_info_base_interface wayfire_information_impl =
 {
     .view_info      = get_view_info,
+    .view_info_id   = send_view_info_from_id,
     .view_info_list = send_all_views,
 };
 
