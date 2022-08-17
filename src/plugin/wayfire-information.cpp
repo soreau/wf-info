@@ -121,11 +121,11 @@ void wayfire_information::send_view_info(wayfire_view view)
 
 void wayfire_information::deactivate()
 {
-
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
 	o->deactivate_plugin(grab_interfaces[o]);
         grab_interfaces[o]->ungrab();
+        grab_interfaces[o].reset();
     }
 
     idle_set_cursor.run_once([this] ()
@@ -149,18 +149,16 @@ wayfire_information::wayfire_information()
         LOGE("Failed to create wayfire_information interface");
         return;
     }
-
-    for (auto& o : wf::get_core().output_layout->get_outputs())
-    {
-        grab_interfaces[o] = std::make_unique<wf::plugin_grab_interface_t> (o);
-        grab_interfaces[o]->name = "wf-info";
-        grab_interfaces[o]->capabilities = wf::CAPABILITY_GRAB_INPUT;
-    }
 }
 
 wayfire_information::~wayfire_information()
 {
     wl_global_destroy(manager);
+
+    for (auto& o : wf::get_core().output_layout->get_outputs())
+    {
+        grab_interfaces[o].reset();
+    }
 }
 
 wayfire_view view_from_id(int32_t id)
@@ -187,6 +185,10 @@ static void get_view_info(struct wl_client *client, struct wl_resource *resource
 
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
+        wd->grab_interfaces[o] = std::make_unique<wf::plugin_grab_interface_t> (o);
+        wd->grab_interfaces[o]->name = "wf-info";
+        wd->grab_interfaces[o]->capabilities = wf::CAPABILITY_GRAB_INPUT;
+
         if (!o->activate_plugin(wd->grab_interfaces[o]))
         {
             continue;
