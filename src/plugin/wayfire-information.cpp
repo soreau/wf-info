@@ -34,6 +34,7 @@
 #include <wayfire/nonstd/wlroots-full.hpp>
 #include <linux/input-event-codes.h>
 #include <wayfire/util/log.hpp>
+#include <wayfire/plugins/common/util.hpp>
 
 #include "wayfire-information.hpp"
 #include "wayfire-information-server-protocol.h"
@@ -77,7 +78,7 @@ void wayfire_information::send_view_info(wayfire_view view)
 
     auto og = output->get_screen_size();
     auto ws = output->workspace->get_current_workspace();
-    auto wm = view->transform_region(view->get_wm_geometry());
+    auto wm = wf::view_bounding_box_up_to(view);
     wf::point_t workspace = {
         ws.x + (int)std::floor((wm.x + wm.width / 2.0) / og.width),
         ws.y + (int)std::floor((wm.y + wm.height / 2.0) / og.height)
