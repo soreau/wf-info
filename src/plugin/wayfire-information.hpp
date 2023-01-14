@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Scott Moreau
+ * Copyright (c) 2023 Scott Moreau
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,21 @@
 
 #pragma once
 
+#include <wayfire/plugins/common/input-grab.hpp>
+
 class wayfire_information
 {
     wl_global *manager;
 
   public:
+    wf::pointer_interaction_t *base;
     std::vector<wl_resource*> client_resources;
     void send_view_info(wayfire_view view);
     void deactivate();
+    void set_base_ptr(wf::pointer_interaction_t *base);
     wf::wl_idle_call idle_set_cursor;
-    std::map<wf::output_t*, std::unique_ptr<wf::plugin_grab_interface_t>> grab_interfaces;
+    std::map<wf::output_t*, std::unique_ptr<wf::input_grab_t>> input_grabs;
+    void end_grab();
     wayfire_information();
     ~wayfire_information();
 };
