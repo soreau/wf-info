@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Scott Moreau
+ * Copyright (c) 2023 Scott Moreau
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,11 @@ extern "C"
 {
 #include <wlr/types/wlr_seat.h>
 }
+
+wf::plugin_activation_data_t grab_interface{
+    .name = "wf-info",
+    .capabilities = wf::CAPABILITY_GRAB_INPUT,
+};
 
 static void bind_manager(wl_client *client, void *data,
     uint32_t version, uint32_t id);
@@ -124,9 +129,9 @@ void wayfire_information::deactivate()
 {
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
-	o->deactivate_plugin(grab_interfaces[o]);
-        grab_interfaces[o]->ungrab();
-        grab_interfaces[o].reset();
+        o->deactivate_plugin(&grab_interface);
+        input_grabs[o]->ungrab_input();
+        input_grabs[o].reset();
     }
 
     idle_set_cursor.run_once([this] ()
@@ -138,6 +143,16 @@ void wayfire_information::deactivate()
             wf_info_base_send_done(r);
         }
     });
+}
+
+void wayfire_information::end_grab()
+{
+    deactivate();
+}
+
+void wayfire_information::set_base_ptr(wf::pointer_interaction_t *base)
+{
+    this->base = base;
 }
 
 wayfire_information::wayfire_information()
@@ -158,7 +173,7 @@ wayfire_information::~wayfire_information()
 
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
-        grab_interfaces[o].reset();
+        input_grabs[o].reset();
     }
 }
 
@@ -186,24 +201,14 @@ static void get_view_info(struct wl_client *client, struct wl_resource *resource
 
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
-        wd->grab_interfaces[o] = std::make_unique<wf::plugin_grab_interface_t> (o);
-        wd->grab_interfaces[o]->name = "wf-info";
-        wd->grab_interfaces[o]->capabilities = wf::CAPABILITY_GRAB_INPUT;
+        wd->input_grabs[o] = std::make_unique<wf::input_grab_t> (grab_interface.name, o, nullptr, wd->base, nullptr);
 
-        if (!o->activate_plugin(wd->grab_interfaces[o]))
+        if (!o->activate_plugin(&grab_interface))
         {
             continue;
         }
 
-        wd->grab_interfaces[o]->callbacks.pointer.button = [=] (uint32_t b, uint32_t s)
-        {
-            if (s == WL_POINTER_BUTTON_STATE_PRESSED)
-            {
-                wd->deactivate();
-            }
-        };
-
-        wd->grab_interfaces[o]->grab();
+        wd->input_grabs[o]->grab_input(wf::scene::layer::OVERLAY);
     }
 
     wd->idle_set_cursor.run_once([wd] ()
