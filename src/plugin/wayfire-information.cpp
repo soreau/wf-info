@@ -28,8 +28,9 @@
 #include <wayfire/view.hpp>
 #include <wayfire/plugin.hpp>
 #include <wayfire/output.hpp>
+#include <wayfire/toplevel-view.hpp>
 #include <wayfire/output-layout.hpp>
-#include <wayfire/workspace-manager.hpp>
+#include <wayfire/workspace-set.hpp>
 #include <wayfire/signal-definitions.hpp>
 #include <wayfire/nonstd/wlroots-full.hpp>
 #include <linux/input-event-codes.h>
@@ -82,14 +83,19 @@ void wayfire_information::send_view_info(wayfire_view view)
     }
 
     auto og = output->get_screen_size();
-    auto ws = output->workspace->get_current_workspace();
+    auto ws = output->wset()->get_current_workspace();
     auto wm = wf::view_bounding_box_up_to(view);
     wf::point_t workspace = {
         ws.x + (int)std::floor((wm.x + wm.width / 2.0) / og.width),
         ws.y + (int)std::floor((wm.y + wm.height / 2.0) / og.height)
     };
 
-    auto vg = view->get_wm_geometry();
+    auto toplevel = toplevel_cast(view);
+    wf::geometry_t vg{0, 0, 0, 0};
+    if (toplevel)
+    {
+        vg = toplevel->get_geometry();
+    }
 
     pid_t pid = 0;
     wlr_surface *wlr_surface = view->get_wlr_surface();
@@ -240,17 +246,14 @@ static void send_all_views(struct wl_client *client, struct wl_resource *resourc
 {
     wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
 
-    for (auto& output : wf::get_core().output_layout->get_outputs())
+    for (auto& view : wf::get_core().get_all_views())
     {
-        for (auto& view : output->workspace->get_views_in_layer(wf::ALL_LAYERS))
+        if (view->role != wf::VIEW_ROLE_TOPLEVEL &&
+            view->role != wf::VIEW_ROLE_DESKTOP_ENVIRONMENT)
         {
-            if (view->role != wf::VIEW_ROLE_TOPLEVEL &&
-                view->role != wf::VIEW_ROLE_DESKTOP_ENVIRONMENT)
-            {
-                continue;
-            }
-            wd->send_view_info(view);
+            continue;
         }
+        wd->send_view_info(view);
     }
 
     for (auto r : wd->client_resources)
