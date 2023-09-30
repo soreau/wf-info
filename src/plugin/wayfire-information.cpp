@@ -25,6 +25,7 @@
 
 #include <sys/time.h>
 #include <wayfire/core.hpp>
+#include <wayfire/seat.hpp>
 #include <wayfire/view.hpp>
 #include <wayfire/plugin.hpp>
 #include <wayfire/output.hpp>
@@ -111,7 +112,7 @@ void wayfire_information::send_view_info(wayfire_view view)
         wl_client_get_credentials(view->get_client(), &pid, 0, 0);
     }
 
-    int focused = wf::get_core().get_active_output()->get_active_view() == view;
+    int focused = wf::get_core().seat->get_active_view() == view;
 
     for (auto r : client_resources)
     {
@@ -187,7 +188,7 @@ wayfire_view view_from_id(int32_t id)
 {
     if (id == -1)
     {
-        return wf::get_core().get_active_output()->get_active_view();
+        return wf::get_core().seat->get_active_view();
     }
 
     for (auto& view : wf::get_core().get_all_views())
