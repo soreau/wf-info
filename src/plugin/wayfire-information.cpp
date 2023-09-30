@@ -26,6 +26,7 @@
 #include <sys/time.h>
 #include <wayfire/core.hpp>
 #include <wayfire/view.hpp>
+#include <wayfire/seat.hpp>
 #include <wayfire/plugin.hpp>
 #include <wayfire/output.hpp>
 #include <wayfire/toplevel-view.hpp>
@@ -101,17 +102,17 @@ void wayfire_information::send_view_info(wayfire_view view)
     wlr_surface *wlr_surface = view->get_wlr_surface();
     int is_xwayland_surface = 0;
 #if WF_HAS_XWAYLAND
-    is_xwayland_surface = wlr_surface_is_xwayland_surface(wlr_surface);
+    is_xwayland_surface = wlr_surface && wlr_xwayland_surface_try_from_wlr_surface(wlr_surface);
     if (is_xwayland_surface)
     {
-        pid = wlr_xwayland_surface_from_wlr_surface(wlr_surface)->pid;
+        pid = wlr_xwayland_surface_try_from_wlr_surface(wlr_surface)->pid;
     } else
 #endif
     {
         wl_client_get_credentials(view->get_client(), &pid, 0, 0);
     }
 
-    int focused = wf::get_core().get_active_output()->get_active_view() == view;
+    int focused = wf::get_active_view_for_output(output) == view;
 
     for (auto r : client_resources)
     {
@@ -187,7 +188,7 @@ wayfire_view view_from_id(int32_t id)
 {
     if (id == -1)
     {
-        return wf::get_core().get_active_output()->get_active_view();
+        return wf::get_active_view_for_output(wf::get_core().seat->get_active_output());
     }
 
     for (auto& view : wf::get_core().get_all_views())
