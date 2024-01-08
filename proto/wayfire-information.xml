@@ -62,8 +62,8 @@
       <arg name="role" type="string" summary="view role"/>
       <arg name="x" type="int" summary="view x position"/>
       <arg name="y" type="int" summary="view y position"/>
-      <arg name="width" type="uint" summary="view width"/>
-      <arg name="height" type="uint" summary="view height"/>
+      <arg name="width" type="int" summary="view width"/>
+      <arg name="height" type="int" summary="view height"/>
       <arg name="is_xwayland" type="int" summary="whether view is xwayland"/>
       <arg name="focused" type="int" summary="whether view is focused"/>
       <arg name="output_id" type="uint" summary="ID of the view's output"/>
