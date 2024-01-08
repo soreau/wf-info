@@ -129,6 +129,7 @@ void wayfire_information::send_view_info(wayfire_view view)
                                        vg.height,
                                        is_xwayland_surface,
                                        focused,
+                                       output->to_string().c_str(),
                                        output->get_id());
     }
 }

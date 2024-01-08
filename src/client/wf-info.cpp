@@ -70,12 +70,13 @@ static void receive_view_info(void *data,
     const int height,
     const int xwayland,
     const int focused,
+    const char * output_name,
     const uint32_t output_id)
 {
     std::cout << "=========================" << std::endl;
     std::cout << "View ID: " << view_id << std::endl;
     std::cout << "Client PID: " << client_pid << std::endl;
-    std::cout << "Output ID: " << output_id << std::endl;
+    std::cout << "Output: " << output_name << "(ID: " << output_id << ")" << std::endl;
     std::cout << "Workspace: " << ws_x << "," << ws_y << std::endl;
     std::cout << "App ID: "  << app_id << std::endl;
     std::cout << "Title: " << title << std::endl;
