@@ -53,7 +53,7 @@
       <description summary="Export information about a view to a client">
 	Provide client with information about a view.
       </description>
-      <arg name="view_id" type="int" summary="view wayfire ID"/>
+      <arg name="view_id" type="uint" summary="view wayfire ID"/>
       <arg name="client_pid" type="int" summary="client PID"/>
       <arg name="workspace_x" type="int" summary="view workspace x"/>
       <arg name="workspace_y" type="int" summary="view workspace y"/>
@@ -62,10 +62,11 @@
       <arg name="role" type="string" summary="view role"/>
       <arg name="x" type="int" summary="view x position"/>
       <arg name="y" type="int" summary="view y position"/>
-      <arg name="width" type="int" summary="view width"/>
-      <arg name="height" type="int" summary="view height"/>
+      <arg name="width" type="uint" summary="view width"/>
+      <arg name="height" type="uint" summary="view height"/>
       <arg name="is_xwayland" type="int" summary="whether view is xwayland"/>
       <arg name="focused" type="int" summary="whether view is focused"/>
+      <arg name="output_id" type="uint" summary="ID of the view's output"/>
     </event>
 
     <event name="done">

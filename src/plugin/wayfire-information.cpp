@@ -128,7 +128,8 @@ void wayfire_information::send_view_info(wayfire_view view)
                                        vg.width,
                                        vg.height,
                                        is_xwayland_surface,
-                                       focused);
+                                       focused,
+                                       output->get_id());
     }
 }
 
@@ -295,5 +296,5 @@ static void bind_manager(wl_client *client, void *data,
     wl_resource_set_implementation(resource,
         &wayfire_information_impl, data, destroy_client);
     wd->client_resources.push_back(resource);
-    
+
 }
