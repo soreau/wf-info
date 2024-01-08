@@ -53,7 +53,7 @@
       <description summary="Export information about a view to a client">
 	Provide client with information about a view.
       </description>
-      <arg name="view_id" type="uint" summary="view wayfire ID"/>
+      <arg name="view_id" type="int" summary="view wayfire ID"/>
       <arg name="client_pid" type="int" summary="client PID"/>
       <arg name="workspace_x" type="int" summary="view workspace x"/>
       <arg name="workspace_y" type="int" summary="view workspace y"/>
