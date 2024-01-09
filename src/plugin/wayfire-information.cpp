@@ -129,7 +129,9 @@ void wayfire_information::send_view_info(wayfire_view view)
                                        vg.width,
                                        vg.height,
                                        is_xwayland_surface,
-                                       focused);
+                                       focused,
+                                       output->to_string().c_str(),
+                                       output->get_id());
     }
 }
 
