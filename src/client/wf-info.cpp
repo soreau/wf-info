@@ -57,7 +57,7 @@ static const struct wl_registry_listener registry_listener = {
 
 static void receive_view_info(void *data,
     struct wf_info_base *wf_info_base,
-    const int view_id,
+    const uint32_t view_id,
     const int client_pid,
     const int ws_x,
     const int ws_y,
