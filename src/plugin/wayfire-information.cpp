@@ -25,6 +25,7 @@
 
 #include <sys/time.h>
 #include <wayfire/core.hpp>
+#include <wayfire/seat.hpp>
 #include <wayfire/view.hpp>
 #include <wayfire/seat.hpp>
 #include <wayfire/plugin.hpp>
@@ -295,5 +296,5 @@ static void bind_manager(wl_client *client, void *data,
     wl_resource_set_implementation(resource,
         &wayfire_information_impl, data, destroy_client);
     wd->client_resources.push_back(resource);
-    
+
 }
