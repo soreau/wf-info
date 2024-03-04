@@ -98,7 +98,7 @@ void wayfire_information::send_view_info(wayfire_view view)
         vg = toplevel->get_geometry();
     }
 
-    pid_t pid = 0;
+    pid_t pid = -1;
     wlr_surface *wlr_surface = view->get_wlr_surface();
     int is_xwayland_surface = 0;
 #if WF_HAS_XWAYLAND
@@ -109,7 +109,10 @@ void wayfire_information::send_view_info(wayfire_view view)
     } else
 #endif
     {
-        wl_client_get_credentials(view->get_client(), &pid, 0, 0);
+        if (view->get_client())
+        {
+            wl_client_get_credentials(view->get_client(), &pid, 0, 0);
+        }
     }
 
     int focused = wf::get_active_view_for_output(output) == view;
