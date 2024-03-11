@@ -15,18 +15,24 @@ Enable Information Protocol plugin
 
 Run `wf-info` and click on a window, run `wf-info -l` to list information about all windows, or use `wf-info -i $id` where `$id` is the ID of the view about which you want info. An ID of -1 means the focused view.
 
-## Example
+## Examples
 
 ```
-$ wf-info
+$ wf-info 
 =========================
-View ID: 771706616
-Client PID: 574934
+View ID: 1112
+Client PID: 1562086
+Output: DP-2(ID: 1)
 Workspace: 0,0
-App ID: xfce4-terminal
-Title: Terminal - root@desktop: /
+App ID: python3
+Title: Wayfire Window Information
 Role: TOPLEVEL
-Geometry: 954,384 843x424
+Geometry: 710,231 500x629
 Xwayland: false
+Focused: false
 =========================
 ```
+
+`python3 src/client/qt/gui.py`
+
+![wf-info-gui](https://github.com/soreau/wf-info/assets/1450125/31d1e550-f145-4cec-a1ab-013b2c57844b)
