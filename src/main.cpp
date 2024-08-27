@@ -42,7 +42,7 @@ class wf_info : public wf::plugin_interface_t, public wf::pointer_interaction_t
 
     void handle_pointer_button(const wlr_pointer_button_event& event) override
     {
-        if (event.state == WLR_BUTTON_PRESSED)
+        if (event.state == WL_POINTER_BUTTON_STATE_PRESSED)
         {
             wayfire_information_ptr->end_grab();
         }
