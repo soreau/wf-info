@@ -58,7 +58,11 @@ void wayfire_information::send_view_info(wayfire_view view)
 {
     if (!view)
     {
-        ipc_call = false;
+        if (ipc_call)
+        {
+            ipc_response = wf::ipc::json_error("No view found");
+            ipc_call = false;
+        }
         return;
     }
     if (ipc_call)
@@ -188,6 +192,10 @@ wayfire_information::wayfire_information()
 
     get_view_info_ipc = [=] (nlohmann::json data)
     {
+        if (ipc_call)
+        {
+            return wf::ipc::json_error("Another ipc grab is already active.");
+        }
         for (auto& o : wf::get_core().output_layout->get_outputs())
         {
             input_grabs[o] = std::make_unique<wf::input_grab_t> (grab_interface.name, o, nullptr, base, nullptr);
