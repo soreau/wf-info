@@ -25,7 +25,10 @@
 
 #pragma once
 
+#include "ipc-rules-common.hpp"
 #include <wayfire/plugins/common/input-grab.hpp>
+#include <wayfire/plugins/common/shared-core-data.hpp>
+#include <wayfire/plugins/ipc/ipc-method-repository.hpp>
 
 class wayfire_information
 {
@@ -39,6 +42,10 @@ class wayfire_information
     void set_base_ptr(wf::pointer_interaction_t *base);
     wf::wl_idle_call idle_set_cursor;
     std::map<wf::output_t*, std::unique_ptr<wf::input_grab_t>> input_grabs;
+    bool ipc_call = false;
+    nlohmann::json ipc_response;
+    wf::ipc::method_callback get_view_info_ipc;
+    wf::shared_data::ref_ptr_t<wf::ipc::method_repository_t> ipc_repo;
     void end_grab();
     wayfire_information();
     ~wayfire_information();
