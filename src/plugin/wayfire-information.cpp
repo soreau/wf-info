@@ -167,6 +167,7 @@ void wayfire_information::deactivate()
             wf_info_base_send_done(r);
         }
     });
+    wl_call = false;
 }
 
 void wayfire_information::end_grab()
@@ -256,6 +257,12 @@ wayfire_view view_from_id(int32_t id)
 static void get_view_info(struct wl_client *client, struct wl_resource *resource)
 {
     wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
+
+    if (wd->wl_call)
+    {
+        return;
+    }
+    wd->wl_call = true;
 
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {

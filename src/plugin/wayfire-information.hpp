@@ -43,6 +43,7 @@ class wayfire_information
     wf::wl_idle_call idle_set_cursor;
     std::map<wf::output_t*, std::unique_ptr<wf::input_grab_t>> input_grabs;
     bool ipc_call = false;
+    bool wl_call = false;
     nlohmann::json ipc_response;
     wf::ipc::method_callback get_view_info_ipc;
     wf::shared_data::ref_ptr_t<wf::ipc::method_repository_t> ipc_repo;
