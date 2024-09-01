@@ -7,4 +7,4 @@ from wayfire.extra.wpe import WPE
 sock = WayfireSocket()
 wpe = WPE(sock)
 
-print(f"View Info:\n{json.dumps(wpe.get_view_info(), indent=2)}")
+print(f"View Info:\n{json.dumps(wpe.get_view_info(), indent=2, ensure_ascii=False)}")
