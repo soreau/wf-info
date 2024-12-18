@@ -58,6 +58,18 @@ void wayfire_information::send_view_info(wayfire_view view)
 {
     if (!view)
     {
+        if (ipc_call)
+        {
+            ipc_response = wf::ipc::json_error("No view found");
+            ipc_call = false;
+        }
+        return;
+    }
+    if (ipc_call)
+    {
+        ipc_response = wf::ipc::json_ok();
+        ipc_response["info"] = view_to_json(view);
+        ipc_call = false;
         return;
     }
     auto output = view->get_output();
@@ -155,6 +167,7 @@ void wayfire_information::deactivate()
             wf_info_base_send_done(r);
         }
     });
+    wl_call = false;
 }
 
 void wayfire_information::end_grab()
@@ -177,6 +190,40 @@ wayfire_information::wayfire_information()
         LOGE("Failed to create wayfire_information interface");
         return;
     }
+
+    get_view_info_ipc = [=] (nlohmann::json data)
+    {
+        if (ipc_call)
+        {
+            return wf::ipc::json_error("Another ipc grab is already active.");
+        }
+        for (auto& o : wf::get_core().output_layout->get_outputs())
+        {
+            input_grabs[o] = std::make_unique<wf::input_grab_t> (grab_interface.name, o, nullptr, base, nullptr);
+
+            if (!o->activate_plugin(&grab_interface))
+            {
+                continue;
+            }
+
+            input_grabs[o]->grab_input(wf::scene::layer::OVERLAY);
+        }
+
+        idle_set_cursor.run_once([=] ()
+        {
+            wf::get_core().set_cursor("crosshair");
+        });
+
+        ipc_call = true;
+        while (ipc_call)
+        {
+            wl_event_loop_dispatch(wf::get_core().ev_loop, 0);
+        }
+
+        return ipc_response;
+    };
+
+    ipc_repo->register_method("wf-info/get_view_info", get_view_info_ipc);
 }
 
 wayfire_information::~wayfire_information()
@@ -210,6 +257,12 @@ wayfire_view view_from_id(int32_t id)
 static void get_view_info(struct wl_client *client, struct wl_resource *resource)
 {
     wayfire_information *wd = (wayfire_information*)wl_resource_get_user_data(resource);
+
+    if (wd->wl_call)
+    {
+        return;
+    }
+    wd->wl_call = true;
 
     for (auto& o : wf::get_core().output_layout->get_outputs())
     {
