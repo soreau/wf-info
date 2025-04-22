@@ -25,10 +25,11 @@
 
 #pragma once
 
-#include "ipc-rules-common.hpp"
+#include <wayfire/nonstd/json.hpp>
 #include <wayfire/plugins/common/input-grab.hpp>
 #include <wayfire/plugins/common/shared-core-data.hpp>
 #include <wayfire/plugins/ipc/ipc-method-repository.hpp>
+#include "ipc-rules-common.hpp"
 
 class wayfire_information
 {
@@ -44,7 +45,7 @@ class wayfire_information
     std::map<wf::output_t*, std::unique_ptr<wf::input_grab_t>> input_grabs;
     bool ipc_call = false;
     bool wl_call = false;
-    nlohmann::json ipc_response;
+    wf::json_t ipc_response;
     wf::ipc::method_callback get_view_info_ipc;
     wf::shared_data::ref_ptr_t<wf::ipc::method_repository_t> ipc_repo;
     void end_grab();

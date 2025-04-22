@@ -2,7 +2,6 @@
 #include <wayfire/plugins/ipc/ipc-helpers.hpp>
 #include <wayfire/output.hpp>
 #include <wayfire/workarea.hpp>
-#include <nlohmann/json.hpp>
 #include <wayfire/workspace-set.hpp>
 #include <wayfire/config.h>
 #include <wayfire/plugins/common/util.hpp>
@@ -10,14 +9,14 @@
 #include <wayfire/unstable/wlr-surface-node.hpp>
 #include <wayfire/view-helpers.hpp>
 
-static inline nlohmann::json output_to_json(wf::output_t *o)
+static inline wf::json_t output_to_json(wf::output_t *o)
 {
     if (!o)
     {
-        return nullptr;
+        return wf::json_t::null();
     }
 
-    nlohmann::json response;
+    wf::json_t response;
     response["id"]   = o->get_id();
     response["name"] = o->to_string();
     response["geometry"]   = wf::ipc::geometry_to_json(o->get_layout_geometry());
@@ -166,15 +165,15 @@ static inline std::string get_view_type(wayfire_view view)
     return "unknown";
 }
 
-static inline nlohmann::json view_to_json(wayfire_view view)
+static inline wf::json_t view_to_json(wayfire_view view)
 {
     if (!view)
     {
-        return nullptr;
+        return wf::json_t::null();
     }
 
     auto output = view->get_output();
-    nlohmann::json description;
+    wf::json_t description;
     description["id"]     = view->get_id();
     description["pid"]    = get_view_pid(view);
     description["title"]  = view->get_title();
@@ -196,8 +195,10 @@ static inline nlohmann::json view_to_json(wayfire_view view)
     description["minimized"]   = toplevel ? toplevel->minimized : false;
     description["activated"]   = toplevel ? toplevel->activated : false;
     description["sticky"]     = toplevel ? toplevel->sticky : false;
-    description["wset-index"] = toplevel && toplevel->get_wset() ? toplevel->get_wset()->get_index() : -1;
-    description["min-size"]   = wf::ipc::dimensions_to_json(
+    description["wset-index"] = toplevel && toplevel->get_wset() ?
+        static_cast<int64_t>(toplevel->get_wset()->get_index()) :
+        -1;
+    description["min-size"] = wf::ipc::dimensions_to_json(
         toplevel ? toplevel->toplevel()->get_min_size() : wf::dimensions_t{0, 0});
     description["max-size"] = wf::ipc::dimensions_to_json(
         toplevel ? toplevel->toplevel()->get_max_size() : wf::dimensions_t{0, 0});
@@ -207,14 +208,14 @@ static inline nlohmann::json view_to_json(wayfire_view view)
     return description;
 }
 
-static inline nlohmann::json wset_to_json(wf::workspace_set_t *wset)
+static inline wf::json_t wset_to_json(wf::workspace_set_t *wset)
 {
     if (!wset)
     {
-        return nullptr;
+        return wf::json_t::null();
     }
 
-    nlohmann::json response;
+    wf::json_t response;
     response["index"] = wset->get_index();
     response["name"]  = wset->to_string();
 
