@@ -191,7 +191,7 @@ wayfire_information::wayfire_information()
         return;
     }
 
-    get_view_info_ipc = [=] (nlohmann::json data)
+    get_view_info_ipc = [=] (wf::json_t data)
     {
         if (ipc_call)
         {
